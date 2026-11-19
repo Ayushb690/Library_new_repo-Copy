@@ -1,11 +1,1 @@
-# Reasons for Admin Dashboard Login Issues
 
-You are unable to log in to the Admin Dashboard due to the following structural and configuration issues in the codebase:
-
-1. **Chicken-and-Egg Admin Registration Lock**:
-   - The default registration endpoint (`/api/v1/auth/register` in [authRouter.js](file:///c:/Library_new_repo/backend/routes/authRouter.js)) registers all users with a default role of `"User"`.
-   - The only route that allows registering a user with the `"Admin"` role is `/api/v1/user/add/new-admin` (defined in [userRouter.js](file:///c:/Library_new_repo/backend/routes/userRouter.js)).
-   - However, the `/add/new-admin` route is protected by `isAuthorized("Admin")` middleware, meaning you must **already be logged in as an Admin** to call it and register any new admin. Since no default Admin user is seeded or predefined in the database, it is impossible to register or login as an Admin.
-
-2. **Merge Conflict Markers in Environment Config**:
-   - The [config.env](file:///c:/Library_new_repo/backend/config/config.env) file contains unresolved git merge conflict markers (`<<<<<<< HEAD`) on line 1. This can cause issues with the server parsing environment variables correctly (such as `PORT`, `MONGO_URI`, etc.) during startup.
