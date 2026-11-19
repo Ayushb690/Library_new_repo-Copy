@@ -22,13 +22,16 @@ const Register = () => {
   const navigateTo = useNavigate();
   const handleRegister = (e) => {
     e.preventDefault();
+    if (!name || !email || !password) {
+      toast.error("Please fill in all fields.");
+      return;
+    }
+    if (password.length < 8 || password.length > 16) {
+      toast.error("Password must be between 8 and 16 characters long.");
+      return;
+    }
 
-    const data = new FormData();
-    data.append("name", name);
-    data.append("email", email);
-    data.append("password", password);
-
-    dispatch(register(data));
+    dispatch(register({ name, email, password }));
   };
 
   useEffect(() => {
@@ -79,38 +82,57 @@ const Register = () => {
             <br />
             <form onSubmit={handleRegister}
             >
-              <div className="mb-2">
-                <input type="text" value={name} onChange={(e) => setName(e.target.value)}
+              <div className="mb-4">
+                <input
+                  type="text"
+                  value={name}
+                  onChange={(e) => setName(e.target.value)}
                   placeholder="Full Name"
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md focus:outline-none" />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-slate-600 focus:ring-1 focus:ring-slate-600 outline-none transition"
+                  required
+                />
               </div>
-              <div className="mb-2">
-                <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
+              <div className="mb-4">
+                <input
+                  type="email"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
                   placeholder="Email"
-                  className="w-full px-4 py-3 border border-gray-400 rounded-md focus:outline-none" />
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-slate-600 focus:ring-1 focus:ring-slate-600 outline-none transition"
+                  required
+                />
               </div>
-              <div className="mb-2">
-                <input type="password" value={password} onChange={(e) => setPassword(e.target.value)}
-                  placeholder="password"
-                  className="w-full px-4 py-3 border border-gray-400  rounded-md focus:outline-none" />
+              <div className="mb-4">
+                <input
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="Password (8-16 chars)"
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:border-slate-600 focus:ring-1 focus:ring-slate-600 outline-none transition"
+                  required
+                  minLength={8}
+                  maxLength={16}
+                />
               </div>
-              <div className=" block md:hidden font-semibold mt-5">
+              <div className="block md:hidden text-center text-sm text-gray-600 mt-4">
                 <p>
-                  Already have an acoount?
-                  <Link to="/login" className="text-sm text-gray-300 hover:underline"> Sign In</Link>
+                  Already have an account?{" "}
+                  <Link to="/login" className="font-semibold text-slate-700 underline">
+                    Sign In
+                  </Link>
                 </p>
-
               </div>
-              <button type="submit" className="border-2 mt-5
-                   border-gray-400 w-full font-semibold
-                    bg-slate-500 text-white
-                    py-2 rounded-lg hover:bg-white
-                    hover:text-slate-500 "> SIGN UP</button>
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-6 w-full font-semibold bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-800 transition disabled:opacity-60 shadow-sm"
+              >
+                {loading ? "Creating Account..." : "SIGN UP"}
+              </button>
             </form>
           </div>
         </div>
       </div>
-      I
     </>
   );
 };

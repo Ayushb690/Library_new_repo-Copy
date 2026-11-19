@@ -45,69 +45,62 @@ const OTP = () => {
 
   return (
     <>
-      <div className="flex flex-col justify-center md:flex-row h-screen ">
-
+      <div className="flex flex-col justify-center md:flex-row min-h-screen">
         {/* LEFT SIDE */}
-        <div
-          className="w-full md:w-full flex items-center justify-center p-8 relative "
-        >
-
+        <div className="w-full md:w-1/2 flex items-center justify-center p-8 relative">
           <Link
-            to={"/register"}
-            className="border-2 border-black rounded-3xl font-bold w-52 py-2
-            px-4 absolute top-10 -left-24  text-gray-500 hover:bg-slate-500 hover:text-white transition duration-300 text-right"
+            to="/register"
+            className="absolute top-6 left-6 text-sm font-semibold text-slate-600 hover:text-black transition"
           >
-            Back
+            &larr; Back to Register
           </Link>
 
           <div className="max-w-sm w-full">
-            <div className="flex justify-center mb-12">
-              <div className="rounded-half flex items-center justify-center">
-                <img src={logo} alt="logo" className="h-28 w-auto" />
-              </div>
+            <div className="flex justify-center mb-8">
+              <img src={logo} alt="logo" className="h-24 w-auto object-contain" />
             </div>
 
-            <h1 className="text-4xl font-medium text-center mb-12 overflow-hidden text-gray-500">
+            <h1 className="text-3xl font-semibold text-center mb-2 text-gray-800">
               Check your Mailbox
             </h1>
 
-            <p className="text-gray-700 text-center mb-12">
-              Please enter the otp to proceed
+            <p className="text-gray-500 text-center mb-8 text-sm">
+              We sent a verification code to <span className="font-semibold text-gray-700">{email}</span>
             </p>
 
-            <form onSubmit={handleOtpVerification}>
-              <div className="mb-4">
+            <form onSubmit={handleOtpVerification} className="space-y-4">
+              <div>
                 <input
-                  type="password"
+                  type="text"
                   value={otp}
-                  onChange={(e) => setOtp(e.target.value)}
-                  className="w-full px-4 py-3 border border-slate-500 rounded-md focus:outline-none"
-                  placeholder="OTP"
+                  onChange={(e) => setOtp(e.target.value.trim())}
+                  className="w-full px-4 py-3 border border-gray-300 rounded-lg text-center tracking-widest text-xl font-bold focus:border-slate-600 focus:ring-1 focus:ring-slate-600 outline-none transition"
+                  placeholder="Enter OTP"
+                  maxLength={6}
+                  required
                 />
               </div>
-              <button type="submit" className="border-2 mt-5
-                   border-gray-400 w-full font-semibold
-                    bg-slate-500 text-white
-                    py-2 rounded-lg hover:bg-white
-                    hover:text-slate-500 transition"> VERIFY</button>
-
+              <button
+                type="submit"
+                disabled={loading}
+                className="mt-6 w-full font-semibold bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-800 transition disabled:opacity-60 shadow-sm"
+              >
+                {loading ? "Verifying..." : "VERIFY OTP"}
+              </button>
             </form>
           </div>
-
         </div>
-        {/* right side */}
-        <div className="hidden w-full md:w-1/2 bg-slate-500 text-white md:flex flex-col items-center justify-center
-        p-8 rounded-tl-[80px] rounded-bl-[80px]">
-          <div className="text-center h-[400px]">
-            <div className="flex justify-center mb-12">
-              <img src={logo_with_title} alt="logo" className="mb-12 h-28 w-auto" />
+
+        {/* RIGHT SIDE */}
+        <div className="hidden w-full md:w-1/2 bg-slate-600 text-white md:flex flex-col items-center justify-center p-8 rounded-tl-[80px] rounded-bl-[80px]">
+          <div className="text-center max-w-sm">
+            <div className="flex justify-center mb-8">
+              <img src={logo_with_title} alt="logo" className="h-28 w-auto object-contain" />
             </div>
-            <p className="text-gray-300 mb-12">New to Platform?Sign up now.</p>
-            <Link to={"/register"} className="border-2 mt-5
-                   border-white px-8 w-full font-semibold
-                    bg-white text-slate-500
-                    py-2 rounded-lg
-                    hover:text-white transition hover:bg-slate-500">SIGN UP</Link>
+            <h2 className="text-2xl font-bold mb-3">Almost There!</h2>
+            <p className="text-gray-200 mb-8 text-sm">
+              Check your inbox (or spam folder) for the 5-digit verification code to activate your account.
+            </p>
           </div>
         </div>
       </div>

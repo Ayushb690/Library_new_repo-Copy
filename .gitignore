@@ -1,1 +1,181 @@
+# =============================================================================
+# ENVIRONMENT & SECRETS (CRITICAL SECURITY)
+# =============================================================================
+# Environment files & secret variables
+*.env
+*.env.*
+.env
+.env.*
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+config.env
+*/config.env
+*/config/config.env
+**/config/config.env
+server/config/config.env
+backend/config/config.env
+
+# Allow sample / example configuration files for setup & onboarding
+!*.env.example
+!.env.example
+!config.env.example
+!*/config/config.env.example
+!**/config/config.env.example
+
+# Private Keys, Certificates & SSL/TLS Credentials
+*.pem
+*.key
+*.pkcs12
+*.pfx
+*.p12
+*.crt
+*.cert
+*.der
+id_rsa
+id_rsa.pub
+id_dsa
+id_ed25519
+id_ed25519.pub
+id_ecdsa
+*.keystore
+*.jks
+
+# Cloud, Service Accounts & API Secrets
+credentials.json
+client_secret*.json
+service-account*.json
+firebase-admin*.json
+google-credentials*.json
+secrets/
+credentials/
+private/
+certs/
+
+# =============================================================================
+# DEPENDENCIES & PACKAGE MANAGERS
+# =============================================================================
+node_modules/
+*/node_modules/
+**/node_modules/
+server/node_modules/
+client/node_modules/
+backend/node_modules/
+.pnpm-store/
+package-lock.json.lock
+
+# =============================================================================
+# PRODUCTION BUILDS & CACHES
+# =============================================================================
+dist/
+*/dist/
+**/dist/
+build/
+*/build/
+**/build/
+out/
+*/out/
+**/out/
+.cache/
+.parcel-cache/
+.eslintcache
+.stylelintcache
+*.tsbuildinfo
+
+# Server static asset bundle (compiled from client)
+server/public/assets/
+server/public/index.html
+server/public/vite.svg
+!server/public/.gitkeep
+
+# =============================================================================
+# LOGS & PROCESS RUNTIMES
+# =============================================================================
+logs/
+*.log
+*.log.*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+.pids/
+*.pid
+*.seed
+*.pid.lock
+
+# =============================================================================
+# DATABASE & DATA DUMPS
+# =============================================================================
+*.sqlite
+*.sqlite3
+*.db
+*.db-journal
+*.sql
+*.sql.gz
+*.dump
+dump/
+dumps/
+mongod.lock
+data/
+
+# =============================================================================
+# OPERATING SYSTEM & SYSTEM ARTIFACTS
+# =============================================================================
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+Thumbs.db:encryptable
+desktop.ini
+
+# =============================================================================
+# IDE & EDITOR CONFIGURATIONS
+# =============================================================================
+.idea/
+*.sublime-project
+*.sublime-workspace
+*.swp
+*.swo
+*~
+.vscode/*
+!.vscode/settings.json
+!.vscode/tasks.json
+!.vscode/launch.json
+!.vscode/extensions.json
+
+# =============================================================================
+# TEST COVERAGE & REPORTS
+# =============================================================================
+coverage/
+*/coverage/
+.nyc_output/
+
+# =============================================================================
+# TEMPORARY & CRASH DUMP FILES
+# =============================================================================
+tmp/
+/tmp/
+temp/
+*.tmp
+*.temp
+core
+core.*
+
+# =============================================================================
+# LARGE MEDIA & ARCHIVES (PREVENT REPO BLOAT & ACCIDENTAL LEAKS)
+# =============================================================================
 Landing_ui.mp4
+*.mp4
+*.mov
+*.avi
+*.wmv
+*.zip
+*.tar
+*.tar.gz
+*.rar
+*.7z

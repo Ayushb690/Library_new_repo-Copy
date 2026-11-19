@@ -2,7 +2,7 @@ import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toast } from "react-toastify";
 import { toggleAddNewAdminPopup } from "./popUpSlice";
-
+import { API_BASE_URL } from "../../utils/api";
 
 const userSlice = createSlice({
     name: "user",
@@ -16,7 +16,7 @@ const userSlice = createSlice({
         },
         fetchAllUsersSuccess(state, action) {
             state.loading = false;
-            state.users = action.payload;
+            state.users = action.payload || [];
         },
         fetchAllUsersFailed(state) {
             state.loading = false;
@@ -26,19 +26,18 @@ const userSlice = createSlice({
         },
         addNewAdminSuccess(state) {
             state.loading = false;
-
         },
         addNewAdminFailed(state) {
             state.loading = false;
-
         },
     },
 });
+
 export const fetchAllUsers = () => async (dispatch) => {
     dispatch(userSlice.actions.fetchAllUsersRequest());
 
     await axios
-        .get("http://localhost:4000/api/v1/user/all", {
+        .get(`${API_BASE_URL}/api/v1/user/all`, {
             withCredentials: true,
         })
         .then((res) => {
@@ -49,7 +48,7 @@ export const fetchAllUsers = () => async (dispatch) => {
         .catch((err) => {
             dispatch(
                 userSlice.actions.fetchAllUsersFailed(
-                    err.response.data.message
+                    err.response?.data?.message || err.message || "Failed to fetch users."
                 )
             );
         });
@@ -60,7 +59,7 @@ export const addNewAdmin = (data) => async (dispatch) => {
 
     await axios
         .post(
-            "http://localhost:4000/api/v1/user/add/new-admin",
+            `${API_BASE_URL}/api/v1/user/add/new-admin`,
             data,
             {
                 withCredentials: true,
@@ -77,7 +76,7 @@ export const addNewAdmin = (data) => async (dispatch) => {
         })
         .catch((err) => {
             dispatch(userSlice.actions.addNewAdminFailed());
-            toast.error(err.response.data.message);
+            toast.error(err.response?.data?.message || err.message || "Failed to add admin.");
         });
 };
 export default userSlice.reducer;

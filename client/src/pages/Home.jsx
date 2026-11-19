@@ -53,6 +53,7 @@ const Home = () => {
       <Sidebar
         isSideBarOpen={isSideBarOpen}
         setIsSideBarOpen={setIsSideBarOpen}
+        selectedComponent={selectedComponent}
         setSelectedComponent={setSelectedComponent}
       />
 

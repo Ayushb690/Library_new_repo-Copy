@@ -40,23 +40,27 @@ const UserDashboard = () => {
   const [totalReturnedBooks, setTotalReturnedBooks] = useState(0);
 
   useEffect(() => {
-    const numberOfTotalBorrowedBooks = userBorrowedBooks.filter(
+    const list = userBorrowedBooks || [];
+    const numberOfTotalBorrowedBooks = list.filter(
       (book) => book.returned === false
     );
-    const numberOfTotalReturnedBooks = userBorrowedBooks.filter(
+    const numberOfTotalReturnedBooks = list.filter(
       (book) => book.returned === true
     );
     setTotalBorrowedBooks(numberOfTotalBorrowedBooks.length);
     setTotalReturnedBooks(numberOfTotalReturnedBooks.length);
   }, [userBorrowedBooks]);
 
+  const hasData = totalBorrowedBooks > 0 || totalReturnedBooks > 0;
   const data = {
-    labels: ["Total Borrowed Books", "Total Returned Books"],
+    labels: hasData
+      ? ["Total Borrowed Books", "Total Returned Books"]
+      : ["No borrow history"],
     datasets: [
       {
-        data: [totalBorrowedBooks, totalReturnedBooks],
-        backgroundColor: ["#3D3E3E", "#151619"],
-        hoverOffset: 4,
+        data: hasData ? [totalBorrowedBooks, totalReturnedBooks] : [1],
+        backgroundColor: hasData ? ["#475569", "#1e293b"] : ["#e2e8f0"],
+        hoverOffset: hasData ? 4 : 0,
       },
     ],
   };
@@ -111,14 +115,11 @@ const UserDashboard = () => {
 
           {/* Quote */}
           <div className="bg-white p-6 sm:p-8 min-h-[180px] sm:min-h-52 flex-1 flex flex-col justify-center items-center text-center rounded-2xl shadow-sm relative">
-            <h4 className="text-base sm:text-xl xl:text-2xl 2xl:text-3xl font-semibold leading-relaxed max-w-3xl">
-              "Lorem ipsum, dolor sit amet consectetur adipisicing elit. Magnam,
-              veniam totam cupiditate tenetur consequuntur cumque recusandae
-              unde, possimus dolorum pariatur corporis nihil deleniti
-              provident."
+            <h4 className="text-base sm:text-xl xl:text-2xl 2xl:text-3xl font-semibold leading-relaxed max-w-3xl text-gray-800">
+              "The reading of all good books is like conversation with the finest minds of past centuries."
             </h4>
-            <p className="text-gray-600 text-sm sm:text-base mt-4 self-end">
-              ~ OUR E-Library Team
+            <p className="text-gray-500 text-sm sm:text-base mt-4 self-end">
+              ~ René Descartes (OUTR E-Library)
             </p>
           </div>
         </div>

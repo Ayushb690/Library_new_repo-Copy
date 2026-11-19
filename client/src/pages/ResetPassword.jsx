@@ -10,20 +10,28 @@ import { resetAuthSlice, resetPassword } from "../store/slices/authSlice";
 const ResetPassword = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const { token } = useParams();
 
   const dispatch = useDispatch();
-  const { loading, error, message, user, isAuthenticated } = useSelector(
+  const { loading, error, message, isAuthenticated } = useSelector(
     (state) => state.auth
   );
+
   const handleResetPassword = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("password", password);
-    formData.append("confirmPassword", confirmPassword);
-    dispatch(resetPassword(formData, token));
+    if (password !== confirmPassword) {
+      toast.error("Password and Confirm Password do not match.");
+      return;
+    }
+    if (password.length < 8 || password.length > 16) {
+      toast.error("Password must be between 8 and 16 characters long.");
+      return;
+    }
+    dispatch(resetPassword({ password, confirmPassword }, token));
   };
+
   useEffect(() => {
     if (message) {
       toast.success(message);
@@ -34,113 +42,99 @@ const ResetPassword = () => {
       toast.error(error);
       dispatch(resetAuthSlice());
     }
-  }, [dispatch, isAuthenticated, error, loading]);
+  }, [dispatch, message, error]);
 
   if (isAuthenticated) {
     return <Navigate to={"/"} />;
   }
 
-  return <>
-    <div className="flex flex-col justify-center md:flex-row h-screen">
-      {/* left section */}
-      <div className=" hidden w-full md:w-1/2 bg-slate-500 text-white md:flex 
-        flex-col items-center justify-center p-8 rounded-tr-[80px]
-        rounded-br-[80px]"
-      >
-        <div className="text-center h-[450px]">
-          <div className="flex justify-center mb-12">
-            <img src={logo_with_title} alt="logo" className="mb-12h-44 w-auto" />
+  return (
+    <>
+      <div className="flex flex-col justify-center md:flex-row min-h-screen">
+        {/* left section */}
+        <div className="hidden w-full md:w-1/2 bg-slate-600 text-white md:flex flex-col items-center justify-center p-8 rounded-tr-[80px] rounded-br-[80px]">
+          <div className="text-center max-w-sm">
+            <div className="flex justify-center mb-10">
+              <img src={logo_with_title} alt="logo" className="h-28 w-auto object-contain" />
+            </div>
+            <h3 className="text-gray-100 mb-6 text-2xl font-medium leading-relaxed">
+              "One Stop Library Solution."
+            </h3>
+            <p className="text-gray-300 text-sm">
+              Create a new secure password for your account to regain access.
+            </p>
           </div>
-          <h3 className="text-gray-300 mb-12 max-w-[320px] mx-auto text-3xl font-medium leading-10">"One Stop Library solution."</h3>
         </div>
-      </div>
-      {/* right section */}
-      <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative">
-        <Link
-          to={"/password/forgot"}
-          className="border-2 border-black rounded-3xl font-bold w-52 py-2
-        px-4 absolute top-10 -left-24  text-gray-500 hover:bg-slate-500 hover:text-white transition duration-300 text-right"
-        >
-          Back
-        </Link>
-        <div className="w-full max-w-sm">
-          <div className="flex justify-center mb-12">
-            <div className="flex items-center justify-center">
-              <img src={logo} alt="logo" className="h-24 w-auto" />
+        {/* right section */}
+        <div className="w-full md:w-1/2 flex items-center justify-center bg-white p-8 relative">
+          <Link
+            to="/password/forgot"
+            className="absolute top-6 left-6 text-sm font-semibold text-slate-600 hover:underline"
+          >
+            &larr; Back
+          </Link>
+          <div className="w-full max-w-sm">
+            <div className="flex justify-center mb-8">
+              <img src={logo} alt="logo" className="h-24 w-auto object-contain" />
             </div>
-          </div>
-          <h1 className="text-4xl font-medium text-center mb-5 overflow-hidden">Reset Password</h1>
-          <p className="text-gray-800 text-center mb-12">Please enter your Password</p>
-          <form onSubmit={handleResetPassword}>
-            <div className="mb-2">
-              <input type="password"
-                required
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                placeholder="Password"
-                className="w-full px-4 py-3 rounded-md border border-slate-500 hover:border-red-400 hover:outline-4
-                focus:outline-none transition duration-300" />
-              {/* <input type="password"
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm Password"
-                className="w-full px-4 py-3 mb-8 border border-slate-500 rounded-md focus:outline-none" /> */}
-            </div>
-            <div className="relative mb-8">
-              <input
-                type={showConfirmPassword ? "text" : "password"}
-                required
-                value={confirmPassword}
-                onChange={(e) => setConfirmPassword(e.target.value)}
-                placeholder="Confirm Password"
-                className="w-full px-4 py-3 rounded-md border border-slate-500 hover:border-red-400 hover:outline-4
-                focus:outline-none transition duration-300"/>
+            <h1 className="text-3xl font-semibold text-center mb-2 text-gray-800">
+              Reset Password
+            </h1>
+            <p className="text-gray-500 text-center mb-8 text-sm">
+              Please enter your new password
+            </p>
+            <form onSubmit={handleResetPassword} className="space-y-4">
+              <div className="relative">
+                <input
+                  type={showPassword ? "text" : "password"}
+                  required
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  placeholder="New Password (8-16 chars)"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-slate-600 focus:ring-1 focus:ring-slate-600 outline-none transition"
+                  minLength={8}
+                  maxLength={16}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowPassword(!showPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+                >
+                  {showPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                </button>
+              </div>
+              <div className="relative">
+                <input
+                  type={showConfirmPassword ? "text" : "password"}
+                  required
+                  value={confirmPassword}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                  placeholder="Confirm New Password"
+                  className="w-full px-4 py-3 rounded-lg border border-gray-300 focus:border-slate-600 focus:ring-1 focus:ring-slate-600 outline-none transition"
+                  minLength={8}
+                  maxLength={16}
+                />
+                <button
+                  type="button"
+                  onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                  className="absolute right-4 top-1/2 -translate-y-1/2 text-gray-500 hover:text-gray-800"
+                >
+                  {showConfirmPassword ? <FaEyeSlash size={18} /> : <FaEye size={18} />}
+                </button>
+              </div>
               <button
-                type="button"
-                onClick={() =>
-                  setShowConfirmPassword(!showConfirmPassword)
-                }
-                className="absolute right-4 top-1/2 -translate-y-1/2 text-slate-500 hover:text-black"
+                type="submit"
+                className="mt-6 w-full font-semibold bg-slate-700 text-white py-3 rounded-lg hover:bg-slate-800 transition disabled:opacity-60 shadow-sm"
+                disabled={loading}
               >
-                {showConfirmPassword ? (
-                  <FaEyeSlash size={18} />
-                ) : (
-                  <FaEye size={18} />
-                )}
+                {loading ? "Resetting Password..." : "SET NEW PASSWORD"}
               </button>
-            </div>
-            <button type="submit" className="border-2
-                   border-slate-500 w-full font-semibold
-                   bg-slate-500 text-white
-                   py-2 rounded-lg hover:bg-white
-                   hover:text-slate-600 transition"
-              disabled={loading ? true : false}>
-              RESET PASSWORD
-            </button>
-          </form>
+            </form>
+          </div>
         </div>
       </div>
-
-    </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  </>;
+    </>
+  );
 };
 
 export default ResetPassword;

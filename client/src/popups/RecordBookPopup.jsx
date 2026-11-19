@@ -1,53 +1,74 @@
 import React, { useState } from "react";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { recordBorrowBook } from "../store/slices/borrowSlice";
 import { toggleRecordBookPopup } from "../store/slices/popUpSlice";
+import closeIcon from "../assets/close-square.png";
 
 const RecordBookPopup = ({ bookId }) => {
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { loading } = useSelector((state) => state.borrow);
   const [email, setEmail] = useState("");
+
   const handleRecordBook = (e) => {
     e.preventDefault();
-dispatch(recordBorrowBook(email, bookId));
+    if (!email) return;
+    dispatch(recordBorrowBook(email, bookId));
   };
 
-
-  return (<>
-    <div className="fixed inset-0 Dbg-black bg-opacity-50 p-5 flex items-center justify-center z-50">
-      <div className="w-full bg-white rounded-1g shadow-1g md:w-1/3">
+  return (
+    <div
+      className="fixed inset-0 bg-black/60 p-5 flex items-center justify-center z-50"
+      onClick={() => dispatch(toggleRecordBookPopup())}
+    >
+      <div
+        className="w-full bg-white rounded-xl shadow-2xl md:w-1/2 lg:w-1/3"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6">
-          <h3 className="text-x1 font-bold mb-4">Record Book</h3>
-          <form onSubmit={handleRecordBook}>
-            <div className="mb-4">
-              <label className="block text-gray-900 font-medium">
-                User Email
+          <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-200">
+            <h3 className="text-xl font-bold text-gray-800">Record Borrowed Book</h3>
+            <img
+              src={closeIcon}
+              alt="close"
+              className="w-6 h-6 cursor-pointer hover:opacity-75 transition"
+              onClick={() => dispatch(toggleRecordBookPopup())}
+            />
+          </div>
+
+          <form onSubmit={handleRecordBook} className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-700 font-medium mb-1">
+                Borrower's Email *
               </label>
-              <input type="email"
+              <input
+                type="email"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
-                placeholder="Borrower's Email"
-                className="w-full px-4 py-2 border-2 Oborder-black rounded-md"
+                placeholder="user@example.com"
+                className="w-full px-3.5 py-2.5 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600"
+                required
               />
             </div>
-            <div className="flex justify-end space-x-4">
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
               <button
-                className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
                 type="button"
-                onClick={() => {
-                  dispatch(toggleRecordBookPopup());
-                }}
+                onClick={() => dispatch(toggleRecordBookPopup())}
               >
-                Close
+                Cancel
               </button>
-              <button type="submit" className="px-4 py-2 bg-black  text-white rounded-md hover:bg-gray-700">
-                Record
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-5 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition font-medium disabled:opacity-60"
+              >
+                {loading ? "Recording..." : "Record Borrow"}
               </button>
             </div>
           </form>
         </div>
       </div>
-    </div >
-    </>
+    </div>
   );
 };
 

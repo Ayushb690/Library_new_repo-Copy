@@ -20,45 +20,36 @@ const Catalog = () => {
   const [filter, setFilter] = useState("borrowed");
 
   const formatDateAndTime = (timeStamp) => {
+    if (!timeStamp) return "-";
     const date = new Date(timeStamp);
-    const formattedDate = `${String(date.getDate()).padStart(2, "0")}-
-    ${String(date.getMonth() + 1).padStart(2, "0")}-${date.getFullYear()}`;
-
-    const formattedTime = `${String(date.getHours()).
-      padStart(2, "0")}
-      :${String(date.getMinutes()).padStart(2, "0")}:${String(
-        date.getSeconds()
-      ).padStart(2, "0")}`;
+    const formattedDate = `${String(date.getDate()).padStart(2, "0")}-${String(date.getMonth() + 1).padStart(2, "0")}-${date.getFullYear()}`;
+    const formattedTime = `${String(date.getHours()).padStart(2, "0")}:${String(date.getMinutes()).padStart(2, "0")}:${String(date.getSeconds()).padStart(2, "0")}`;
     return `${formattedDate} ${formattedTime}`;
   };
+
   const formatDate = (timeStamp) => {
+    if (!timeStamp) return "-";
     const date = new Date(timeStamp);
-    return `${String(date.getDate()).padStart(2, "0")}-
-    ${String(date.getMonth() + 1).
-        padStart(2, "0")}-${String(date.getFullYear())}`;
+    return `${String(date.getDate()).padStart(2, "0")}-${String(date.getMonth() + 1).padStart(2, "0")}-${String(date.getFullYear())}`;
   };
 
   const currentDate = new Date();
 
-  const borrowedBooks = allBorrowedBooks?.filter((book) => {
+  const borrowedBooks = (allBorrowedBooks || []).filter((book) => !book.returnDate);
+  const overdueBooks = (allBorrowedBooks || []).filter((book) => {
     const dueDate = new Date(book.dueDate);
-    return dueDate > currentDate;
-  });
-  const overdueBooks = allBorrowedBooks?.filter((book) => {
-    const dueDate = new Date(book.dueDate);
-    return dueDate <= currentDate;
+    return !book.returnDate && dueDate <= currentDate;
   });
   const booksToDisplay = filter === "borrowed" ? borrowedBooks : overdueBooks;
 
   const [email, setEmail] = useState("");
   const [borrowedBookId, setBorrowedBookId] = useState("");
   const openReturnBookPopup = (bookId, email) => {
-    console.log("Selected Book ID:", bookId);
-
     setBorrowedBookId(bookId);
     setEmail(email);
     dispatch(toggleReturnBookPopup());
   };
+
   useEffect(() => {
     if (message) {
       toast.success(message);
@@ -71,7 +62,7 @@ const Catalog = () => {
       toast.error(error);
       dispatch(resetBorrowSlice());
     }
-  }, [dispatch, error, loading]);
+  }, [dispatch, error, message]);
   return (
     <>
       <main className="relative min-h-screen bg-gray-100 p-6 pt-28">
@@ -162,16 +153,17 @@ const Catalog = () => {
                           {book.returnDate ? (
                             <FaSquareCheck
                               className="h-6 w-6 text-green-600"
+                              title="Returned"
                             />
                           ) : (
                             <PiKeyReturnBold
+                              className="h-6 w-6 text-slate-700 hover:text-black cursor-pointer hover:scale-110 transition-transform"
+                              title="Return Book"
                               onClick={() => {
-                                console.log("Borrow Record:", book);
-                                console.log("Book Object:", book.book);
-
                                 openReturnBookPopup(
-                                  book.book.id,
-                                  book.user.email)
+                                  book.book?.id || book.book?._id,
+                                  book.user?.email
+                                );
                               }}
                             />
                           )}

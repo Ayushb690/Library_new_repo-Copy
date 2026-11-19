@@ -1,6 +1,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 import axios from "axios";
 import { toggleRecordBookPopup } from "./popUpSlice";
+import { API_BASE_URL } from "../../utils/api";
 
 const borrowSlice = createSlice({
     name: "borrow",
@@ -86,7 +87,7 @@ export const fetchUserBorrowedBooks = () => async (dispatch) => {
 
     try {
         const res = await axios.get(
-            "http://localhost:4000/api/v1/borrow/my-borrowed-books",
+            `${API_BASE_URL}/api/v1/borrow/my-borrowed-books`,
             {
                 withCredentials: true,
             }
@@ -115,7 +116,7 @@ export const fetchAllBorrowedBooks = () => async (dispatch) => {
 
     try {
         const res = await axios.get(
-            "http://localhost:4000/api/v1/borrow/borrowed-books-by-users",
+            `${API_BASE_URL}/api/v1/borrow/borrowed-books-by-users`,
             {
                 withCredentials: true,
             }
@@ -146,7 +147,7 @@ export const recordBorrowBook = (email, id) => async (dispatch) => {
 
     try {
         const res = await axios.post(
-            `http://localhost:4000/api/v1/borrow/record-borrow-book/${id}`,
+            `${API_BASE_URL}/api/v1/borrow/record-borrow-book/${id}`,
             { email },
             {
                 withCredentials: true,
@@ -179,7 +180,7 @@ export const returnBook = (email,id) => async (dispatch) => {
 
     try {
         const res = await axios.put(
-            `http://localhost:4000/api/v1/borrow/return-borrowed-books/${id}`,
+            `${API_BASE_URL}/api/v1/borrow/return-borrowed-books/${id}`,
             { email },
             {
                 withCredentials: true,

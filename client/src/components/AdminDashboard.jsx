@@ -80,13 +80,17 @@ const AdminDashboard = () => {
     setTotalBorrowedBooks(numberOfTotalBorrowedBooks.length);
     setTotalReturnedBooks(numberOfTotalReturnedBooks.length);
   }, [users, books, allBorrowedBooks]);
+
+  const hasData = totalBorrowedBooks > 0 || totalReturnedBooks > 0;
   const data = {
-    labels: ["Total Borrowed Books", "Total Returned Books"],
+    labels: hasData
+      ? ["Total Borrowed Books", "Total Returned Books"]
+      : ["No borrow history"],
     datasets: [
       {
-        data: [totalBorrowedBooks, totalReturnedBooks],
-        backgroundColor: ["#3D3E3E", "#151619"],
-        hoverOffset: 4,
+        data: hasData ? [totalBorrowedBooks, totalReturnedBooks] : [1],
+        backgroundColor: hasData ? ["#3D3E3E", "#151619"] : ["#e2e8f0"],
+        hoverOffset: hasData ? 4 : 0,
       },
     ],
   };
@@ -243,7 +247,7 @@ const AdminDashboard = () => {
               <div className="bg-white rounded-xl shadow-md p-8 flex flex-col justify-center items-center text-center">
 
                 <img
-                  src={avatar_image}
+                  src={user?.avatar?.url || avatar_image}
                   alt="Avatar"
                   className="w-36 h-36 rounded-full object-cover border-4 border-gray-200"
                 />

@@ -1,0 +1,25 @@
+import { generateVerificationOtpEmailTemplate } from "./emailTemplates.js";
+import { sendEmail } from "./sendEmail.js";
+
+export async function sendVerificationCode(verificationCode, email, res) {
+    try {
+        console.log(`Verification code for ${email}: ${verificationCode}`);
+        const message = generateVerificationOtpEmailTemplate(verificationCode);
+        await sendEmail({
+            email,
+            subject: "Verification Code (OUTR Library Management System)",
+            message,
+        });
+        res.status(200).json({
+            success: true,
+            message: "Verification code sent successfully.",
+        });
+    } catch (error) {
+        console.error("EMAIL ERROR 👉", error);
+        return res.status(500).json({
+            success: false,
+            message: "Verification code failed to send.",
+            error: error.message
+        });
+    }
+}

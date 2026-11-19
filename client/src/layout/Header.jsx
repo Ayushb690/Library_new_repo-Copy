@@ -30,42 +30,44 @@ const Header = () => {
 
   }, []);
 
-  return (<>
-    <header className="absolute top-0 bg-white w-full py-4
-px-6 left-0 shadow-md flex justify-between
-items-center">
-      {/* LEFT */}
-      <div className=" flex items-center gap-2">
-        <img src={userIcon} alt="userIcon" className="w-8 h-8" />
-        <div className="flex  flex-col">
-          <span className="text-sm font-medium sm:text-lg:text-xl sm:font-semibold">
-            {user && user.name}
-          </span>
-          <span className="text-sm font-medium sm:text-lg sm:font-medium">
-            {user && user.role}
-          </span>
-        </div>
-      </div>
-      {/* RIGHT */}
-      <div className="hidden md:flex items-center gap-2">
-        <div className="flex flex-col text-sm lg:text-base items-end font-semibold" >
-          <span>{currentTime}</span>
-          <span>{currentDate}</span>
-        </div>
+  return (
+    <>
+      <header className="absolute top-0 left-0 right-0 bg-white w-full py-3.5 px-6 shadow-sm flex justify-between items-center z-10">
+        {/* LEFT */}
         <div className="flex items-center gap-3">
-    <span className="bg-slate-600 h-14 w-[2px]"></span>
-
-    <img
-        src={settingIcon}
-        alt="settingIcon"
-        className="w-8 h-8 cursor-pointer"
-        onClick={() => dispatch(toggleSettingPopup())}
-    />
-</div>
-      </div>
-    </header>
-
-  </>
+          <img
+            src={user?.avatar?.url || userIcon}
+            alt="userAvatar"
+            className="w-10 h-10 rounded-full object-cover border border-gray-200"
+          />
+          <div className="flex flex-col">
+            <span className="text-sm font-semibold sm:text-base lg:text-lg text-gray-800 leading-tight">
+              {user && user.name}
+            </span>
+            <span className="text-xs sm:text-sm font-medium text-slate-500">
+              {user && user.role}
+            </span>
+          </div>
+        </div>
+        {/* RIGHT */}
+        <div className="hidden md:flex items-center gap-4">
+          <div className="flex flex-col text-xs lg:text-sm items-end font-semibold text-gray-700">
+            <span>{currentTime}</span>
+            <span className="text-gray-500 font-normal">{currentDate}</span>
+          </div>
+          <div className="flex items-center gap-3">
+            <span className="bg-gray-300 h-10 w-[1px]"></span>
+            <img
+              src={settingIcon}
+              alt="settingIcon"
+              className="w-7 h-7 cursor-pointer hover:rotate-45 transition-transform duration-300"
+              onClick={() => dispatch(toggleSettingPopup())}
+              title="Settings"
+            />
+          </div>
+        </div>
+      </header>
+    </>
   );
 };
 

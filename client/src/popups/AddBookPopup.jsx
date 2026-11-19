@@ -1,111 +1,165 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { addBook, fetchAllBooks } from "../store/slices/bookSlice";
+import { addBook } from "../store/slices/bookSlice";
 import { toggleAddBookPopup } from "../store/slices/popUpSlice";
+import closeIcon from "../assets/close-square.png";
 
 const AddBookPopup = () => {
   const dispatch = useDispatch();
-  // const { message, loading } = useSelector(state => state.book)
+  const { loading } = useSelector((state) => state.book);
 
   const [title, setTitle] = useState("");
   const [author, setAuthor] = useState("");
+  const [isbn, setIsbn] = useState("");
   const [price, setPrice] = useState("");
   const [quantity, setQuantity] = useState("");
   const [description, setDescription] = useState("");
 
   const handleAddBook = (e) => {
     e.preventDefault();
-    const formData = new FormData();
-    formData.append("title", title);
-    formData.append("author", author);
-    formData.append("price", price);
-    formData.append("quantity", quantity);
-    formData.append("description", description);
-    dispatch(addBook(formData));
+    dispatch(
+      addBook({
+        title,
+        author,
+        isbn,
+        price: Number(price),
+        quantity: Number(quantity),
+        description,
+      })
+    );
   };
+
   return (
-    <div className="fixed inset-0 Dbg-black bg-opacity-50 p-5 flex items-center justify-center z-50">
-      <div className="w-full bg-white rounded-1g shadow-1g md:w-1/3">
+    <div
+      className="fixed inset-0 bg-black/60 p-5 flex items-center justify-center z-50 overflow-y-auto"
+      onClick={() => dispatch(toggleAddBookPopup())}
+    >
+      <div
+        className="w-full bg-white rounded-xl shadow-2xl md:w-1/2 lg:w-1/3 max-h-[90vh] overflow-y-auto"
+        onClick={(e) => e.stopPropagation()}
+      >
         <div className="p-6">
-          <h3 className="text-x1 font-bold mb-4">Record Book</h3>
-          <form onSubmit={handleAddBook}>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium">
-                Book Title
+          <div className="flex justify-between items-center mb-5 pb-3 border-b border-gray-200">
+            <h3 className="text-xl font-bold text-gray-800">Add New Book</h3>
+            <img
+              src={closeIcon}
+              alt="close"
+              className="w-6 h-6 cursor-pointer hover:opacity-75 transition"
+              onClick={() => dispatch(toggleAddBookPopup())}
+            />
+          </div>
+
+          <form onSubmit={handleAddBook} className="space-y-4">
+            <div>
+              <label className="block text-sm text-gray-700 font-medium mb-1">
+                Book Title *
               </label>
-              <input type="text"
+              <input
+                type="text"
                 value={title}
                 onChange={(e) => setTitle(e.target.value)}
-                placeholder="Book Title"
-                className="w-full px-4 py-2 border-2 border-black rounded-md"
+                placeholder="e.g. Clean Code"
+                className="w-full px-3.5 py-2 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium">
-                Book Author
+
+            <div>
+              <label className="block text-sm text-gray-700 font-medium mb-1">
+                Book Author *
               </label>
-              <input type="text"
+              <input
+                type="text"
                 value={author}
                 onChange={(e) => setAuthor(e.target.value)}
-                placeholder="Book Author"
-                className="w-full px-4 py-2 border-2 border-black rounded-md"
+                placeholder="e.g. Robert C. Martin"
+                className="w-full px-3.5 py-2 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium">
-                Book Price(price for borrowing)
+
+            <div>
+              <label className="block text-sm text-gray-700 font-medium mb-1">
+                ISBN *
               </label>
-              <input type="number"
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-                placeholder="Book Price"
-                className="w-full px-4 py-2 border-2 border-black rounded-md"
+              <input
+                type="text"
+                value={isbn}
+                onChange={(e) => setIsbn(e.target.value)}
+                placeholder="e.g. 978-0132350884"
+                className="w-full px-3.5 py-2 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600 font-mono text-sm"
                 required
               />
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium">
-                Quantity
-              </label>
-              <input type="number"
-                value={quantity}
-                onChange={(e) => setTitle(e.target.value)}
-                placeholder="Book Quantity"
-                className="w-full px-4 py-2 border-2 border-black rounded-md"
-                required
-              />
+
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-sm text-gray-700 font-medium mb-1">
+                  Borrow Price (₹) *
+                </label>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="e.g. 50"
+                  className="w-full px-3.5 py-2 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600"
+                  required
+                />
+              </div>
+
+              <div>
+                <label className="block text-sm text-gray-700 font-medium mb-1">
+                  Quantity *
+                </label>
+                <input
+                  type="number"
+                  min="1"
+                  value={quantity}
+                  onChange={(e) => setQuantity(e.target.value)}
+                  placeholder="e.g. 5"
+                  className="w-full px-3.5 py-2 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600"
+                  required
+                />
+              </div>
             </div>
-            <div className="mb-4">
-              <label className="block text-gray-700 font-medium">
-                Description
+
+            <div>
+              <label className="block text-sm text-gray-700 font-medium mb-1">
+                Description *
               </label>
-              <textarea value={description}
+              <textarea
+                value={description}
                 onChange={(e) => setDescription(e.target.value)}
-                placeholder="Book's Description"
-                rows={4}
-                className="w-full px-4 py-2 border-2 border-black rounded-md"
-                required>
-              </textarea>
+                placeholder="A brief overview of the book..."
+                rows={3}
+                className="w-full px-3.5 py-2 border border-gray-300 rounded-lg outline-none focus:border-slate-600 focus:ring-1 focus:ring-slate-600"
+                required
+              />
             </div>
-            <div className="flex justify-end space-x-4">
-              <button className="px-4 py-2 bg-gray-200 rounded-md hover:bg-gray-300"
+
+            <div className="flex justify-end gap-3 pt-3 border-t border-gray-100">
+              <button
                 type="button"
-                onClick={() => {
-                  dispatch(toggleAddBookPopup());
-                }}>
-                Close
+                className="px-4 py-2 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition font-medium"
+                onClick={() => dispatch(toggleAddBookPopup())}
+              >
+                Cancel
               </button>
-              <button type="submit" className="px-4 py-2 bg-black text-white
-               rounded-md hover:bg-slate-500">
-                Add
+              <button
+                type="submit"
+                disabled={loading}
+                className="px-5 py-2 bg-slate-800 text-white rounded-lg hover:bg-slate-900 transition font-medium disabled:opacity-60"
+              >
+                {loading ? "Adding..." : "Add Book"}
               </button>
             </div>
           </form>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
+
 export default AddBookPopup;

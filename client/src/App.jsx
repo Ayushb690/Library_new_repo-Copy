@@ -3,6 +3,7 @@ import {
   BrowserRouter as Router,
   Routes,
   Route,
+  Navigate,
 } from "react-router-dom";
 
 import Home from "./pages/Home";
@@ -33,17 +34,22 @@ const App = () => {
 
   useEffect(() => {
     dispatch(getUser());
-    dispatch(fetchAllBooks());
+  }, [dispatch]);
 
-    if (isAuthenticated && user?.role === "User") {
-      dispatch(fetchUserBorrowedBooks());
-    }
+  useEffect(() => {
+    if (isAuthenticated) {
+      dispatch(fetchAllBooks());
 
-    if (isAuthenticated && user?.role === "Admin") {
-      dispatch(fetchAllUsers());
-      dispatch(fetchAllBorrowedBooks());
+      if (user?.role === "User") {
+        dispatch(fetchUserBorrowedBooks());
+      }
+
+      if (user?.role === "Admin") {
+        dispatch(fetchAllUsers());
+        dispatch(fetchAllBorrowedBooks());
+      }
     }
-  }, [dispatch, isAuthenticated, user]);
+  }, [dispatch, isAuthenticated, user?.role]);
 
   return (
     <>
@@ -64,10 +70,11 @@ const App = () => {
             path="/password/reset/:token"
             element={<ResetPassword />}
           />
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </Router>
 
-      <ToastContainer theme="dark" />
+      <ToastContainer theme="dark" position="top-right" autoClose={3000} />
     </>
   );
 };
